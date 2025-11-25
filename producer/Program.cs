@@ -30,19 +30,19 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/weatherforecast", () =>
+app.MapGet("/weatherforecast", async (MyPublisher publisher) =>
 {
     var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
+            new WeatherForecast
+            (
+                DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                Random.Shared.Next(-20, 55),
+                summaries[Random.Shared.Next(summaries.Length)]
+            ))
         .ToArray();
+    await publisher.Publish(string.Join(",", forecast.Select(f => f.Summary)));
     return forecast;
-})
-.WithName("GetWeatherForecast");
+}).WithName("GetWeatherForecast");
 
 app.Run();
 
