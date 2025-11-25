@@ -1,4 +1,5 @@
 ﻿using MassTransit;
+using Models;
 
 public class MyPublisher
 {
